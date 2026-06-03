@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Unified Search Hub</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 650px; margin: 40px auto; padding: 20px; background: #f4f7f6; color: #333; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .flex-box { display: flex; gap: 10px; margin-top: 15px; }
+        input[type="text"], select { padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
+        input[type="text"] { flex-grow: 1; }
+        button { background: #0070f3; color: white; border: none; padding: 12px 24px; font-weight: bold; border-radius: 6px; cursor: pointer; }
+        button:hover { background: #0060d3; }
+        .tag { display: inline-block; background: #e0f2fe; color: #0369a1; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-bottom: 5px; }
+        .result-item { background: #fafafa; padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 5px solid #0070f3; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .file-title { font-weight: bold; margin: 0 0 5px 0; }
+        .summary { font-size: 13px; color: #666; font-style: italic; margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2>🔍 AI Unified Search Hub</h2>
+    <p style="font-size:14px; color:#666;">Type any question to scan across all unknown files in your bulk folder.</p>
+    <div class="flex-box">
+        <input type="text" id="searchInput" placeholder="What are you looking for? (e.g. Find details about budgets)">
+        <select id="categorySelect">
+            <option value="">All Categories</option>
+            <option value="Finance">Finance</option>
+            <option value="Legal">Legal</option>
+            <option value="Technical">Technical</option>
+            <option value="Operations">Operations</option>
+            <option value="Personal">Personal</option>
+        </select>
+        <button onclick="searchAICloud()">Search Folder</button>
+    </div>
+    <div id="searchStatus" style="text-align:center; margin-top:15px; font-size:14px; color:#777;"></div>
+    <div id="results"></div>
+</div>
+<script>
+    async function searchAICloud() {
+        const query = document.getElementById('searchInput').value;
+        const categoryFilter = document.getElementById('categorySelect').value;
+        const searchStatus = document.getElementById('searchStatus');
+        const resultsDiv = document.getElementById('results');
+        if (!query.trim()) return alert("Please enter a search phrase.");
+        searchStatus.innerText = "Analyzing unknown folder documents...";
+        resultsDiv.innerHTML = "";
+        try {
+            const response = await fetch('/api/search-ai-data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query, categoryFilter })
+            });
+            const data = await response.json();
+            searchStatus.innerText = "";
+            if (data.results && data.results.length > 0) {
+                data.results.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'result-item';
+                    div.innerHTML = `
+                        <span class="tag">${item.category.toUpperCase()}</span>
+                        <p class="file-title">📄 Found in File: ${item.file_name || 'Unknown Document'}</p>
+                        <p class="summary"><strong>AI Summary of Content:</strong> ${item.summary}</p>
+                        <div style="font-size:14px; line-height:1.4; color:#444; background:#f0f0f0; padding:10px; border-radius:4px;">...${item.content.substring(0, 250)}...</div>
+                        <span style="font-size:11px; color:#999; display:block; margin-top:10px;">Match Confidence: ${Math.round(item.similarity * 100)}%</span>
+                    `;
+                    resultsDiv.appendChild(div);
+                });
+            } else {
+                resultsDiv.innerHTML = "<p style='text-align:center; font-size:14px;'>No matching information found inside the folder.</p>";
+            }
+        } catch (err) { searchStatus.innerText = "❌ Search failed."; }
+    }
+</script>
+</body>
+</html>
