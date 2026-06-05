@@ -75,7 +75,8 @@
         async function executeCloudSearch() {
             const query = document.getElementById('queryInput').value;
             const selectedFilter = document.getElementById('filterDropdown').value;
-            const MathGrid = document.getElementById('resultsGrid');
+           // const MathGrid = document.getElementById('resultsGrid');
+            const resultsGrid = document.getElementById('resultsGrid');
             resultsGrid.innerHTML = `<div class='placeholder-text' style='color:#38bdf8;'>🤖 Searching folders... Reading spreadsheet data and images... Please wait...</div>`;
 
             try {
