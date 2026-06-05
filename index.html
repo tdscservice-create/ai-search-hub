@@ -28,7 +28,7 @@
         .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .result-title { font-size: 1.1rem; color: #38bdf8; font-weight: 600; }
         .badge { background-color: #0369a1; color: #e0f2fe; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 9999px; text-transform: uppercase; }
-        .result-summary { color: #cbd5e1; font-size: 0.9rem; line-height: 1.5; margin-bottom: 15px; word-break: break-all; }
+        .result-summary { color: #cbd5e1; font-size: 0.9rem; line-height: 1.5; margin-bottom: 15px; word-break: break-all; background-color: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid #1e293b; max-height: 150px; overflow-y: auto; }
         .edit-btn { background-color: #059669; font-size: 0.85rem; padding: 8px 16px; border-radius: 6px; color: white; border: none; cursor: pointer; font-weight: 600; }
         .edit-btn:hover { background-color: #047857; }
         .placeholder-text { text-align: center; padding: 40px; color: #475569; border: 2px dashed #334155; border-radius: 12px; }
@@ -41,8 +41,8 @@
             <h1>✨ Smart File Search & Editing Hub</h1>
             <p class="subtitle">Find and update text, spreadsheet cells, and documents across all your folders.</p>
             <div class="status-container">
-                <div class="status-card"><span>Where It Looks</span><strong>All Connected Folders</strong></div>
-                <div class="status-card green"><span>Picture & Document Reader</span><strong>Ready & Working</strong></div>
+                <div class="status-card"><span>Database Connection</span><strong>Supabase Live Index</strong></div>
+                <div class="status-card green"><span>File Grid Status</span><strong>60 Records Connected</strong></div>
             </div>
         </header>
 
@@ -54,8 +54,6 @@
                     <option value="All">All Files</option>
                     <option value="Spreadsheet">Spreadsheets Only</option>
                     <option value="PDF Document">PDFs Only</option>
-                    <option value="Image Asset">Images Only</option>
-                    <option value="Document">Documents Only</option>
                 </select>
                 
                 <button onclick="executeCloudSearch()">Search Files</button>
@@ -63,23 +61,25 @@
         </div>
 
         <div id="resultsGrid">
-            <div class="placeholder-text">Click 'Search Files' to look through your Google Drive storage.</div>
+            <div class="placeholder-text">Click 'Search Files' to look through your cloud database storage.</div>
         </div>
     </div>
 
     <script>
-        // 🚨 CONFIGURATION HOOK
-        // Replace this link with your exact Web App Link from your Google Script dashboard!
+        // 🚨 LIVE SECURE DEPLOYMENT CONNECTION LINK
+        // Replace this text below with your exact Web App URL string from your new Google Script!
         const GOOGLE_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyRMF2mPmNZA8x-PYnBpeTW_udrNEHYzGOMpwcgfFr9LGUBzaLiFRP4t2fEKZKAKw8SDQ/exec";
-        
+
         async function executeCloudSearch() {
             const query = document.getElementById('queryInput').value;
             const selectedFilter = document.getElementById('filterDropdown').value;
-           // const MathGrid = document.getElementById('resultsGrid');
             const resultsGrid = document.getElementById('resultsGrid');
-            resultsGrid.innerHTML = `<div class='placeholder-text' style='color:#38bdf8;'>🤖 Searching folders... Reading spreadsheet data and images... Please wait...</div>`;
+            
+            // Set dynamic thinking/loading indicator state
+            resultsGrid.innerHTML = `<div class='placeholder-text' style='color:#38bdf8;'>🤖 Querying database records... Reading cell matrices... Please wait...</div>`;
 
             try {
+                // Fetch direct from your authorized execution API router pipeline
                 const response = await fetch(`${GOOGLE_SCRIPT_WEB_APP_URL}?search=${encodeURIComponent(query)}`);
                 const data = await response.json();
 
@@ -88,6 +88,7 @@
                     let filesDisplayedCount = 0;
 
                     data.forEach(item => {
+                        // Direct validation matching for dropdown filter strings
                         if (selectedFilter !== "All" && item.category !== selectedFilter) {
                             return; 
                         }
@@ -95,7 +96,6 @@
                         filesDisplayedCount++;
 
                         let typeLabel = item.category;
-                        if (typeLabel === "Image Asset") typeLabel = "Scanned Image";
                         if (typeLabel === "PDF Document") typeLabel = "PDF File";
                         
                         resultsGrid.innerHTML += `
@@ -104,48 +104,27 @@
                                     <div class="result-title">📄 ${item.name}</div>
                                     <span class="badge">${typeLabel}</span>
                                 </div>
-                                <p class="result-summary" id="text-${item.id}">[Scanned Text Preview]:<br>${item.summary}</p>
-                                <button class="edit-btn" onclick="modifyAsset('${item.id}', '${item.category}')">✏️ Edit File</button>
+                                <div class="result-summary">[Scanned Data Preview]:<br>${item.summary}</div>
+                                <button class="edit-btn" onclick="modifyAsset('${item.id}')">✏️ Edit File</button>
                             </div>
                         `;
                     });
 
                     if (filesDisplayedCount === 0) {
-                        resultsGrid.innerHTML = `<div class='placeholder-text' style='color:#eab308;'>⚠️ Found files matching your text, but none match the selected filter category.</div>`;
+                        resultsGrid.innerHTML = `<div class='placeholder-text' style='color:#eab308;'>⚠️ No matching files found inside your database matching the "${selectedFilter}" category filter.</div>`;
                     }
 
                 } else {
-                    resultsGrid.innerHTML = `<div class='placeholder-text' style='color:#ef4444;'>❌ No files or matching words found inside your Google Drive.</div>`;
+                    resultsGrid.innerHTML = `<div class='placeholder-text' style='color:#ef4444;'>❌ No documents or matching cell words found inside the cloud database.</div>`;
                 }
             } catch (error) {
-                resultsGrid.innerHTML = `<div class='placeholder-text' style='color:#ef4444;'>❌ Connection problem. Make sure your web link on line 54 is correct.</div>`;
+                resultsGrid.innerHTML = `<div class='placeholder-text' style='color:#ef4444;'>❌ Connection problem. Make sure your active web link on line 54 is copied correctly.</div>`;
             }
         }
 
-        async function modifyAsset(id, category) {
-            if (category === "Spreadsheet" || category === "PDF Document" || category === "Image Asset") {
-                alert("Opening your original file in a new tab directly in Google Drive so you can edit it natively.");
-                window.open(`https://google.com{id}`, '_blank');
-                return;
-            }
-
-            const currentText = document.getElementById(`text-${id}`).innerText;
-            const updatedText = prompt("Change the text content for this file directly:", currentText);
-            
-            if (updatedText === null || updatedText.trim() === "") return;
-
-            try {
-                await fetch(GOOGLE_SCRIPT_WEB_APP_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ fileId: id, updatedText: updatedText })
-                });
-                alert("Changes sent successfully! Giving the cloud 5 seconds to update...");
-                executeCloudSearch();
-            } catch (err) {
-                alert("Could not save the changes back to your file.");
-            }
+        async function modifyAsset(id) {
+            alert("Opening your original asset in a new window directly inside Google Drive so you can update rows natively.");
+            window.open(`https://google.com{id}`, '_blank');
         }
     </script>
 </body>
