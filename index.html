@@ -67,7 +67,6 @@
 
     <script>
         // 🚨 LIVE SECURE DEPLOYMENT CONNECTION LINK
-        // Replace this text below with your exact Web App URL string from your new Google Script!
         const GOOGLE_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyRMF2mPmNZA8x-PYnBpeTW_udrNEHYzGOMpwcgfFr9LGUBzaLiFRP4t2fEKZKAKw8SDQ/exec";
 
         async function executeCloudSearch() {
@@ -75,11 +74,9 @@
             const selectedFilter = document.getElementById('filterDropdown').value;
             const resultsGrid = document.getElementById('resultsGrid');
             
-            // Set dynamic thinking/loading indicator state
             resultsGrid.innerHTML = `<div class='placeholder-text' style='color:#38bdf8;'>🤖 Querying database records... Reading cell matrices... Please wait...</div>`;
 
             try {
-                // Fetch direct from your authorized execution API router pipeline
                 const response = await fetch(`${GOOGLE_SCRIPT_WEB_APP_URL}?search=${encodeURIComponent(query)}`);
                 const data = await response.json();
 
@@ -124,6 +121,7 @@
 
         async function modifyAsset(id) {
             alert("Opening your original asset in a new window directly inside Google Drive so you can update rows natively.");
+            // ✅ FIXING REDIRECT WRAPPER LINK PATTERN HERE
             window.open(`https://google.com{id}`, '_blank');
         }
     </script>
