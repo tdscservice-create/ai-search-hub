@@ -102,7 +102,7 @@
                                     <span class="badge">${typeLabel}</span>
                                 </div>
                                 <div class="result-summary">[Scanned Data Preview]:<br>${item.summary}</div>
-                                <button class="edit-btn" onclick="modifyAsset('${item.id}')">✏️ Edit File</button>
+                               <button class="edit-btn" onclick="modifyAsset('${item.drive_file_id}')">✏️ Edit File</button>
                             </div>
                         `;
                     });
@@ -119,11 +119,12 @@
             }
         }
 
-        async function modifyAsset(id) {
-            alert("Opening your original asset in a new window directly inside Google Drive so you can update rows natively.");
-            // ✅ FIXING REDIRECT WRAPPER LINK PATTERN HERE
-            window.open(`https://google.com{id}`, '_blank');
-        }
+       function modifyAsset(id) {
+    window.open(
+      `https://drive.google.com/file/d/${id}/view`,
+      '_blank'
+    );
+}
     </script>
 </body>
 </html>
