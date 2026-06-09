@@ -50,11 +50,27 @@
             <div class="search-form">
                 <input type="text" id="queryInput" placeholder="Type a file name, row word, or cell text here (Leave blank to show everything)...">
                 
-                <select id="filterDropdown">
-                    <option value="All">All Files</option>
-                    <option value="Spreadsheet">Spreadsheets Only</option>
-                    <option value="PDF Document">PDFs Only</option>
-                </select>
+               <select id="filterDropdown">
+
+<option value="All">All Files</option>
+
+<option value="Google Sheet">
+Google Sheets
+</option>
+
+<option value="Excel">
+Excel Files
+</option>
+
+<option value="PDF">
+PDF Files
+</option>
+
+<option value="Image">
+Images
+</option>
+
+</select>
                 
                 <button onclick="executeCloudSearch()">Search Files</button>
             </div>
