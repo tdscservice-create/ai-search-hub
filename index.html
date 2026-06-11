@@ -118,7 +118,7 @@ Images
                                     <span class="badge">${typeLabel}</span>
                                 </div>
                                 <div class="result-summary">[Scanned Data Preview]:<br>${item.summary}</div>
-                               <button class="edit-btn" onclick="modifyAsset('${item.drive_file_id}')">✏️ Edit File</button>
+                               <button class="edit-btn" onclick="modifyAsset('${item.drive_file_id}','${item.category}')">✏️ Edit File</button>
                             </div>
                         `;
                     });
@@ -135,11 +135,29 @@ Images
             }
         }
 
-       function modifyAsset(id) {
-    window.open(
-      `https://drive.google.com/file/d/${id}/view`,
-      '_blank'
-    );
+      function modifyAsset(id, category) {
+
+    if (!id) {
+        alert("Drive ID missing");
+        return;
+    }
+
+    if(category === "Spreadsheet") {
+
+        window.open(
+          "https://docs.google.com/spreadsheets/d/" + id + "/edit",
+          "_blank"
+        );
+
+    } 
+    else {
+
+        window.open(
+          "https://drive.google.com/open?id=" + id,
+          "_blank"
+        );
+
+    }
 }
     </script>
 </body>
