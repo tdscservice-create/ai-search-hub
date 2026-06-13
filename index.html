@@ -91,7 +91,7 @@ Images
             const selectedFilter = document.getElementById('filterDropdown').value;
             const resultsGrid = document.getElementById('resultsGrid');
             
-            resultsGrid.innerHTML = `<div class='placeholder-text' style='color:#38bdf8;'>🤖 Querying database records... Reading cell matrices... Please wait...</div>`;
+            resultsGrid.innerHTML = `<div class='placeholder-text' style='color:#38bdf8;'> Querying database records... Reading cell matrices... Please wait...</div>`;
 
             try {
                 const response = await fetch(`${GOOGLE_SCRIPT_WEB_APP_URL}?search=${encodeURIComponent(query)}`);
